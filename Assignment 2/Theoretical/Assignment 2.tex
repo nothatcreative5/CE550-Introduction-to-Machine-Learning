@@ -1,0 +1,435 @@
+\documentclass[12pt,onecolumn,a4paper]{article}
+\usepackage{epsfig,graphicx,subfigure,amsthm,amsmath}
+\usepackage{float}
+\usepackage{color,xcolor}     
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[rightcaption]{sidecap}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{babel,blindtext}
+\usepackage{svg}
+\usepackage{tikz}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	pdftitle={Overleaf Example},
+	pdfpagemode=FullScreen,
+}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\lstset{style=mystyle,language=Python}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\eng}[1]{{\lr{\selectfont #1}}}
+\begin{document}
+	\begin{titlepage}
+		\vspace*{\stretch{1.0}}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{Sharif Logo.jpg}
+			\label{fig:my_label}
+		\end{figure}
+		\begin{center}
+			\large\textit{
+				Homework 2 \\
+				Introduction to Machine Learning\\
+				}
+			\large\textit{Arya Jalali}\\
+			\large\textit{98105665}
+		\end{center}
+		\vspace*{\stretch{2.0}}
+	\end{titlepage}
+	
+	\newpage
+
+
+\section{Clustering and K-means}
+\subsection{Intuitive Understanding}
+
+\begin{figure}[H]
+	\centering
+	\subfigure[]{\includegraphics[width=0.24\textwidth]{2 small.jpg}} 
+	\subfigure[]{\includegraphics[width=0.24\textwidth]{Circle.jpg}} 
+	\subfigure[]{\includegraphics[width=0.24\textwidth]{2 small 2.jpg}}
+	\subfigure[]{\includegraphics[width=0.24\textwidth]{Noise.jpg}}
+	\caption{(a) Two small blobs (linearly separable) (b) Two circles (c) Two arrows (linearly separable) (d) Dense pocket with noise}
+	\label{fig:foobar}
+\end{figure}
+From the photos we can infer, that datasets that are linearly separable can be meaningfully separated. This stands for two of our datasets(Two small blobs and Two arrows), but when we try to separate two classes that cannot be linearly separated, we get clusters that don't make much sense. This is because at it's core, K-means is a linear classifier. We can prove this by showing the decision boundary is a hyperplane
+\begin{align*}
+	\norm{X - C_1}^2 = \norm{X - C_2}^2
+\end{align*} 
+\begin{align*}
+	\norm{X}^2 + \norm{C_1}^2 - 2C_1.X = \norm{X}^2 + \norm{C_2}^2 - 2C_2.X
+\end{align*}
+\begin{align*}
+	2(C_1 - C_2).X + \norm{C_2}^2 - \norm{C_1}^2 = 0
+\end{align*}
+\begin{align*}
+	(C_1 - C_2).X + \frac{\norm{C_2}^2 - \norm{C_1}^2}{2} = 0
+\end{align*}
+\begin{align*}
+	W.X + C = 0
+\end{align*}
+Feature scaling can't really help us with the circle dataset, because it cannot change the non-linear nature of data. Feature scaling can however give us a better result for the Two arrows dataset, because of the scaling difference between the x and y axis. Feature scaling may or may not help with the Dense pocket dataset; after normalization the dense pocket will still be compact, but the scattered points would form a dense pocket themselves, this two pockets might get tangled, and still not be linearly separable. We can't really be sure.
+\subsection{Finding proper value of K}
+\begin{itemize}
+	\item Inertia is not a normalized metric: we just know that lower values are better and zero is optimal. But in very high-dimensional spaces, Euclidean distances tend to become inflated (this is an instance of the so-called "curse of dimensionality"). Running a dimensionality reduction algorithm such as Principal component analysis (PCA) prior to k-means clustering can alleviate this problem and speed up the computations.Silhouette analysis doesn't suffer from "curse of dimensionality" because of it's normalized coefficient.
+	\item $k = 5$ seems to be the best pick because of two reasons. Firstly, all of our clusters have an above average silhouette score. Secondly, there isn't much variation in their sizes, and are about the same size.
+\end{itemize}
+\subsection{Applications of Clustering}
+\subsubsection{Semi-supervised learning}
+The continuity, or smoothness, assumption indicates that close-together datapoints are likely to have the same label.
+
+Similarly, the cluster assumption indicates that, in a classification problem, data tends to be organized into high-density clusters, and that datapoints of the same cluster are likely to have the same label. Therefore, a decision boundary should not lie in areas of densely packed datapoints; rather, it should lie in-between high-density regions, separating them into discrete clusters.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{Semi-supervised learning}
+	\caption{Unideal Decision Boundary vs. Ideal Decision Boundary (Picture taken from v7labs.com)}
+\end{figure}
+\subsubsection{Active learning}
+Much like its counterpart, active learning tries to find patterns by clustering data together and establishing a relationship between features, and then verifying these relationships with labeled data. This technique, however, can query a user for information about anomalous data, and get a better understanding of data than semi-supervised learning which can only work with data that is given to us at the beginning of training.
+\section{Whitening Using PCA}
+
+We know from linear algebra the covariance matrix of X can be constructed from $\frac{1}{n}X^T X$ (covariance matrix should express the relation between our features, not our data, so $X^T X$ is the correct formulation.). in addition we can project our data onto principle components $t_j$ with a simple matrix multiplication $T = XW$, where columns of $W$ are orthonormal eigenvectors of $X^T X$. 
+\\ \\
+The intuition behind the matrix multiplication is that we want to project our data points onto our new basis, because our new basis is orthonormal, we can find the coefficinet of our projection along a vector in our basis by calculating the dot product of our original data sample with said vector.
+\begin{align*}
+	W = \begin{bmatrix}
+		\vert & \dots  &\vert \\
+		\frac{w_1}{\sqrt{\lambda_1}}   & \dots & \frac{w_m}{\sqrt{\lambda_m}}   \\
+		\vert & \dots &\vert
+	\end{bmatrix}
+\end{align*}
+Calculating the covariance matrix of $XW$ we get
+\begin{align*}
+	cov(XW) \propto W^TX^TXW
+\end{align*}
+\begin{align*}
+	X^TX W = \begin{bmatrix}
+		\vert & \dots  &\vert \\
+		X^TX\frac{w_1}{\sqrt{\lambda_1}}   & \dots & X^TX\frac{w_m}{\sqrt{\lambda_m}}   \\
+		\vert & \dots &\vert
+	\end{bmatrix} = \begin{bmatrix}
+	\vert & \dots  &\vert \\
+	\sqrt{\lambda_1}w_1   & \dots & \sqrt{\lambda_m} w_m   \\
+	\vert & \dots &\vert
+\end{bmatrix}
+\end{align*}
+\begin{align*}
+	W^T \begin{bmatrix}
+		\vert & \dots  &\vert \\
+		\sqrt{\lambda_1}w_1   & \dots & \sqrt{\lambda_m} w_m   \\
+		\vert & \dots &\vert
+	\end{bmatrix} 
+\end{align*}
+\begin{align*}
+	= 
+	\begin{bmatrix}
+		w_1.w_1  & w_1.w_2  & w_1.w_3 & \cdots & \cdots & \cdots & \cdots & w_1.w_m \\
+		w_2.w_1  & w_2.w_2  & w_2.w_3  & \ddots & && & \vdots \\
+		w_3.w_1 & w_3.w_2  & w_3.w_3 & w_3.w_4  & \ddots & &  & \vdots \\
+		\vdots & \ddots & \ddots & \ddots & \ddots & \ddots &  & \vdots \\
+		\vdots & & \ddots & \ddots & \ddots & \ddots & \ddots& \vdots\\
+		\vdots  & & & \ddots & \ddots  & \vdots  &   & \vdots\\
+		\vdots  & && & \ddots & \ddots  & \ddots  &  \vdots \\
+		w_m.w_1 & \cdots &  \cdots & \cdots & \cdots & \cdots & w_{m - 1}.w_m  & w_m.w_m  \\
+	\end{bmatrix} = I
+\end{align*}
+The last equality comes from $w_i$'s being orthonormal.
+\\ \\
+Now we need to prove the mean of our data is zero. Note that we can first normalize our data to have 0 mean, we then show this property is preserved after our transformation.
+\begin{align*}
+	T =  \begin{bmatrix}
+			\vert & \dots  &\vert \\
+			t_1   & \dots & t_m   \\
+			\vert & \dots &\vert
+		\end{bmatrix} 
+\end{align*}
+\begin{align*}
+	t_i = Xw_i = w^{(i)}_1x_1 + \dots + w^{(i)}_{p}x_p
+\end{align*}
+\begin{align*}
+	E[t_i] = E[Xw_i] = w^{(i)}_1E[x_1] + \dots + w^{(i)}_pE[x_p] = 0
+\end{align*}
+Which shows the sum of each column of our new data matrix is 0, therefore the mean of our new matrix is 0 and it's covariance matrix is $I$. Note that we can scale the covariance matrix however we want.
+\section{Linear Regression}
+
+\subsection{Lagrange Multipliers}
+\begin{SCfigure}[0.5][h]
+	\caption{Plot of the contours of the unregularized error function (blue) along with constraint region. Optimum value for the parameter vector $w$ is denoted by $w^*$. The lasso gives a sparse solution in which $w_1^* = 0$}
+	\includegraphics[width=0.6\textwidth]{sparse}
+\end{SCfigure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{differnet p}
+	\caption{Plot of unit ball for different values of p. p = 1 (blue), p = 0.75 (black), p = 0.5 (red), p = 0.25 (purple)}
+\end{figure}
+
+It is evident from the figure above, that decreasing the value of p gives us a more compact unit ball, which leads to more sparse solutions (contours of the unregularized error function can sink deeper to get to $w^*$ compared to lasso norm).
+\\ \\
+The convexity of the unit ball of $L_1$ norm is much more important and convenient for us than the scant improvement we get from using smaller values of p. The reason is the vast amount of convex optimization algorithms that can achieve an optimal value briskly.
+\\ \\
+All that remains is for us to prove that unit ball is not convex for $p < 1$
+\\ \\
+Let $S_p$ be the set of all values of w that are inside the unit ball and $e_i$ the vector with a 1 in the \emph{i}th coordinate and 0's elsewhere.
+\begin{align*}
+	e_1 \in S_p, e_2 \in S_p
+\end{align*}
+If $S_p$ is convex then $t e_1 + (1-t)e_2$ should be in the set for all values of $0 \leq t \leq 1$. We let $t = 0.5$
+
+\begin{align*}
+	\frac{1}{2}^p + \frac{1}{2}^p > 1 \equiv \frac{1}{2}^p > \frac{1}{2} 
+\end{align*}
+The last inequality stands for all $0 < p < 1$, which tells us that the middle point of our two vectors is not part of the set, therefore $S_p$ is non-convex.
+
+\subsection{Ridge Regression (optional)}
+We are going to make a series of assumptions, and see how under those assumptions the ridge regression loss comes up naturally.
+\\
+If we want to maximize the MAP estimation of our weights based on our data, we can write
+
+\begin{align*}
+	Max(P(w|y,x)) \equiv max P(y|x,w) \times P(w)
+\end{align*}
+If $P(y|w,x)$ follows a normal distribution with $w^Tx$ mean and $\sigma^2$ variance, and $P(w)$ follows a normal distribution with zero mean and $b$ variance, we can rewrite the above equation as 
+
+\begin{align*}
+	Max(P(w|y,x)) \equiv Max (\frac{1}{\sqrt{2\pi \sigma^2}} e^{\frac{- ||y - Xw||^2}{2\sigma^2}}
+	\frac{1}{\sqrt{2 \pi b}} e^{\frac{- ||w||^2}{2b}})
+\end{align*}
+Maximizing the above equation is equivalent to minimizing it's negative log.
+\begin{align*}
+	Min(\frac{1}{2\sigma^2}||y - Xw||^2 + \frac{1}{2b} ||w||^2) \equiv Min(||y - Xw||^2 + \frac{\sigma^2}{b} ||w||^2)
+\end{align*} 
+Replacing $\frac{\sigma^2}{b}$ with $\lambda$ gives our desired loss.
+\\ \\
+Note that we got rid of constant coefficients $\frac{1}{\sqrt{2\pi \sigma^2}}$ and $\frac{1}{\sqrt{2\pi b}}$, because they had no effect on the global minima or maxima.
+\\ \\
+Taking the derivative with respect to the vector $w$ and setting it to 0 we have 
+\begin{align*}
+	\frac {\partial} {\partial{w}} (Xw - y)^T(Xw - y) + \lambda w^Tw = \frac{\partial}{\partial w} w^TX^TXw - w^TX^Ty - y^TXw + \lambda w^Tw
+\end{align*}
+Note that $w^T X^T y$ is a scalar, and we have $w^T X^T y = y^T X w$
+\begin{align*}
+	\frac{\partial L(w)}{\partial w} = \frac{\partial}{\partial w} w^TX^TXw - 2y^TX^Tw + \lambda w^Tw
+\end{align*}
+To make sense of the above equation, we need to use the following matrix calculus identities
+\begin{align*}
+	\begin{cases} 
+		\frac{\partial}{\partial w} w^T w = 2w^T \\
+		\frac{\partial}{\partial w} a^T w = a \\
+		\frac{\partial}{\partial w} w^T A w = w^T (A + A^T)
+	\end{cases}
+\end{align*}
+\begin{align*}
+	\frac{\partial L(w)}{\partial w} = 2w^T(X^TX) - 2y^TX^T + 2\lambda w^T
+\end{align*}
+Setting it to zero gives us the optimal value for w
+\begin{align*}
+	w^T(X^TX + \lambda I) = y^T X^T \equiv (X^T X + \lambda I)w = X^T y \rightarrow w^{*} = (X^T X + \lambda I)^{-1} X^T y
+\end{align*}
+\section{Generalization Error}
+\subsection{Dimensionality Reduction}
+The curse of dimensionality occurs because the sample density decreases exponentially with the increase of the dimensionality. When we keep adding features without increasing the number of training samples as well, the dimensionality of the feature space grows and becomes sparser and sparser. Due to this sparsity, it becomes much easier to find a “perfect” solution for the machine learning model which highly likely leads to overfitting.
+\\ \\
+Overfitting happens when the model corresponds too closely to a particular set of data and doesn’t generalize well. An overfitted model would work too well on the training dataset so that it fails on future data and makes the prediction unreliable.
+\subsection{Data Augmentation}
+\subsubsection{Translation}
+Translation just involves moving the image along the X or Y direction (or both). In the following example, we assume that the image has a black background beyond its boundary, and are translated appropriately. This method of augmentation is very useful as most objects can be located at almost anywhere in the image. This forces your convolutional neural network to look everywhere.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{Ball}
+	\caption{Translation of the ball can help our model look at different positions of the picture and become more robust}
+\end{figure}
+\subsubsection{Gaussian Noise}
+Over-fitting usually happens when your neural network tries to learn high frequency features (patterns that occur a lot) that may not be useful. Gaussian noise, which has zero mean, essentially has data points in all frequencies, effectively distorting the high frequency features. This also means that lower frequency components (usually, your intended data) are also distorted, but your neural network can learn to look past that. Adding just the right amount of noise can enhance the learning capability.
+\subsubsection{Backtranslation}
+A sentence is translated in one language and then a new sentence is translated again in the original language. So, different sentences are created.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\textwidth]{Back}
+	\caption{Creating new (but related) sentences from our original data}
+\end{figure}
+\section{Kernels}
+\subsection{Feature Space}
+Using $x.y = \norm{x}\norm{y} cos(\angle x,y)$ and expanding the expression we have
+\begin{align*}
+	(1 + \frac{x.y} {\norm{x}\norm{y}})^2 = 1 + \frac{x.y}{\norm{x}\norm{y}} + \frac{(x.y)^2}{\norm{x}^2 \norm{y}^2}
+\end{align*}
+For each part of the above equation, we can find a specific feature space, and then concatenate them at the end to get $\phi(x)$
+\begin{align*}
+	\phi_{1}(x) = (1)
+\end{align*}
+\begin{align*}
+	\phi_{2}(x) = (\frac{\sqrt{2} x_1}{\norm{x}},\dots, \frac{\sqrt{2}x_n}{\norm{x}}),
+\end{align*}
+\begin{align*}
+	\phi_{3}(x) =  (\frac{x_1^2}{\norm{x}^2}, \frac{x_2^2}{\norm{x}^2},\dots, \frac{x_n^2}{\norm{x}^2}, \frac{\sqrt{2} x_1 x_2}{\norm{x}^2},\dots, \frac{\sqrt{2} x_{1} x_{n}}{\norm{x}^2},\frac{\sqrt{2} x_{2} x_{3}}{\norm{x}^2},  \dots,  \frac{\sqrt{2} x_{n - 1} x_{n}}{\norm{x}^2})
+\end{align*}
+Combining all three we get
+\begin{align*}
+	\phi(x) = (1, \phi_2(x), \phi_3(x))
+\end{align*}
+\subsection{Kernel Matrix}
+\subsubsection{}
+We can fix m, and generalize our proof to $l > m$ using induction.
+\\ \\
+If k is a valid kernel, then
+\begin{align*}
+	\exists \phi(X) \hspace*{0.1cm} s.t \hspace{0.1cm} k(x,y) = \phi(x).\phi(y)
+\end{align*}
+We will use the notation $\phi(x_i) = s_i$ for the rest of our proof
+\begin{align*}
+	v^T
+	\begin{bmatrix}
+		s_1.s_1  & s_1.s_2  & s_1.s_3 & \cdots & \cdots & \cdots & \cdots & s_1.s_m \\
+		s_2.s_1  & s_2.s_2  & s_2.s_3  & \ddots & && & \vdots \\
+		s_3.s_1 & s_3.s_2  & s_3.s_3 & s_3.s_4  & \ddots & &  & \vdots \\
+		\vdots & \ddots & \ddots & \ddots & \ddots & \ddots &  & \vdots \\
+		\vdots & & \ddots & \ddots & \ddots & \ddots & \ddots& \vdots\\
+		\vdots  & & & \ddots & \ddots  & \vdots  &   & \vdots\\
+		\vdots  & && & \ddots & \ddots  & \ddots  &  \vdots \\
+		s_m.s_1 & \cdots &  \cdots & \cdots & \cdots & \cdots & s_{m - 1}.s_m  & s_m.s_m  \\
+	\end{bmatrix}
+	v
+\end{align*}
+\begin{align*}
+	= \sum_{k}\sum_{i} v_k v_i (x_k.x_i) = (v_1x_1 + v_2 x_2 + \dots + v_m x_m).(v_1x_1 + v_2 x_2 + \dots + v_m x_m) 
+\end{align*}
+\begin{align*}
+	= \norm{v_1x_1 + v_2 x_2 + \dots + v_m x_m} \therefore v^T K v \geq 0
+\end{align*}
+The last equation is the condition for Semi positive definiteness.
+\subsubsection{}
+Every real symmetric matrix can be diagonalized, so we can represent the kernel matrix (for a fixed m) like below
+\begin{align*}
+	K = P D P^T
+\end{align*}
+Where D and P are diagonal and orthogonal respectively.
+\begin{align*}
+	K = \begin{bmatrix}
+		\vert & \dots  &\vert \\
+		p_1   & \dots & p_m   \\
+		\vert & \dots &\vert
+	\end{bmatrix}
+		\begin{bmatrix}
+			d_{1} & & \\
+			& \ddots & \\
+			& & d_{m}
+		\end{bmatrix}	
+	\begin{bmatrix}
+	\text{---} & p_1^T & \text{---} \\
+	\dots & \dots & \dots \\
+	\text{---} & p_m^T & \text{---}
+	\end{bmatrix}
+\end{align*}
+\begin{align*}
+	\begin{bmatrix}
+		\vert & \dots  &\vert \\
+		d_1p_1   & \dots & d_mp_m   \\
+		\vert & \dots &\vert
+	\end{bmatrix}
+\begin{bmatrix}
+	\text{---} & p_1^T & \text{---} \\
+	\dots & \dots & \dots \\
+	\text{---} & p_m^T & \text{---}
+\end{bmatrix} = d_1 p_1p_1^T + \dots + d_m p_m p_m^T = M
+\end{align*}
+\begin{align*}
+	M_{ij} = d_1 p_i^{(1)}p_j^{(1)} + \dots + d_m p_i^{(m)} p_j^{(m)} = \phi(x_i).\phi(x_j)
+\end{align*}
+\begin{align*}
+	 \phi(x_i) = (\sqrt{d_1}p^{(1)}_i, \sqrt{d_2}p_i^{(2)}, \dots, \sqrt{d_m}p_i^{(m)}) 
+\end{align*}
+\begin{align*}
+	\phi(x_j) = (\sqrt{d_1}p^{(1)}_j, \sqrt{d_2}p_j^{(2)}, \dots, \sqrt{d_m}p_j^{(m)}) 
+\end{align*}
+We managed to find a feature mapping $\phi(x)$ that corresponds to our kernel; proving that k is a valid kernel.
+\section{Feature Expansion}
+\subsection{}
+\subsubsection{}
+Let us denote the center of the line (center of red poins) $c$, we put forward the following transform
+\begin{align*}
+	\phi_1(x) = |x - c|
+\end{align*}
+After transforming the data using the above function, because the distance of the red points is lower than that of the blue points, they can be linearly separated.
+\subsubsection{}
+Because of the radius difference of two circles, we can make use of their norms
+\begin{align*}
+	\phi_2(x) = x_1^2 + x_2^2 = \norm{x}
+\end{align*}
+\subsubsection{}
+If we perform the $\phi_2$ transform on our data, our transformed data will be like the first line. We can again transform this data using $\phi_1(x)$ to get the final linearly separable data (here we choose c to be the radius of the second circle).
+\begin{align*}
+	\phi_3(x) = \phi_1(\phi_2(x))
+\end{align*}
+\subsection{}
+Expanding the equation gives us
+\begin{align*}
+	x_1^2 + a^2 - 2x_1a + x_2^2 + b^2 - 2bx_2 = r^2 \equiv (-2a, -2b, 1, 1).(x_1,x_2,x_1^2,x_2^2) = r^2 - (a^2 + b^2)
+\end{align*}
+\begin{align*}
+	\begin{cases}
+		f(x) = 1 \hspace{0.1 cm} if \hspace{0.1 cm}\Theta.(x_1,x_2,x_1^2,x_2^2) \leq r^2 - (a^2 + b^2) \\
+		f(x) = 0 \hspace{0.1 cm} if \hspace{0.1 cm}\Theta.(x_1,x_2,x_1^2,x_2^2) > r^2 - (a^2 + b^2)
+	\end{cases}
+\end{align*}
+Which defines a linear separator.
+\section{SVM Decision Boundaries}
+\begin{itemize}
+	\item (a) : RBF kernel, $\gamma$ = 10, $C$ = 1
+	\item (b) : Linear kernel, $C$ = 1
+	\item (c) : Linear kernel, $C$ = 0.1
+	\item (d) : RBF kernel, $\gamma$ = 0.1, $C$ = 15
+	\item (e) : RBF kernel, $\gamma$ = 1, $C$ = 3
+	\item (f) : Linear kernel, $C$ = 10
+\end{itemize}
+Linearity comes from the decision boundaries being straight lines.
+\\ \\
+$C$ acts a regularization parameter. For larger values of $C$, SVM tries to increase its accuracy and minimizing its bias at the cost of a smaller margin; This can explain our answer for linear kernels. 
+\\ \\
+The $\gamma$ parameters can be seen as the inverse of the radius of influence of samples selected by the model as support vectors.
+\\ \\
+The behavior of the model is very sensitive to the $\gamma$ parameter. If $\gamma$ is too large, the radius of the area of influence of the support vectors only includes the support vector itself and no amount of regularization with C will be able to prevent overfitting.
+\\ \\
+When $\gamma$ is very small, the model is too constrained and cannot capture the complexity or “shape” of the data. The region of influence of any selected support vector would include the whole training set. The resulting model will behave similarly to a linear model.
+\\ \\
+Correlating $\gamma$ with the complexity of our model, we can see which plot is for which $\gamma$.
+\section{Monte Carlo Cross Validation}
+\subsection{}
+If $n_t$ is proportional to the size of the training set, overfitting might occur and we might end up with a high and low variance and bias respectively. If we take $n_t$ to be small, our model cannot learn the distribution of our data, and might lack complexity, resulting in a low variance and high bias. 
+\subsection{}
+Each method has its own advantages and disadvantages. Under $k$-fold cross validation, each point gets tested exactly once, which seems fair. However, $k$-fold cross-validation only explores a few of the possible ways that your data could have been partitioned. Monte Carlo lets you explore somewhat more possible partitions, though you're unlikely to get all of them--there are $\binom{100}{50} \approx 10^{28}$ possible ways to 50/50 split a 100 data point set. 
+\\ \\
+If you're attempting to do inference (i.e., statistically compare two algorithms), averaging the results of a $k$-fold cross validation run gets you a (nearly) unbiased estimate of the algorithm's performance, but with high variance. Since you can, in principle, run it for as long as you want/can afford, Monte Carlo cross validation can give you a less variable, but more biased estimate.
+\end{document}

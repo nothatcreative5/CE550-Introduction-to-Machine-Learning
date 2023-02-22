@@ -1,0 +1,279 @@
+\documentclass[12pt,onecolumn,a4paper]{article}
+\usepackage{epsfig,graphicx,subfigure,amsthm,amsmath}
+\usepackage{float}
+\usepackage{color,xcolor}     
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{svg}
+\usepackage{tikz}
+\usepackage{mathtools}
+\usepackage{xepersian}
+\settextfont[Scale=1.2]{NAZANIN.TTF}
+\setlatintextfont[Scale=1]{Times New Roman}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	pdftitle={Overleaf Example},
+	pdfpagemode=FullScreen,
+}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\lstset{style=mystyle,language=Python}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\eng}[1]{{\lr{\selectfont #1}}}
+\begin{document}
+	\begin{titlepage}
+		\vspace*{\stretch{1.0}}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{Sharif Logo.jpg}
+			\label{fig:my_label}
+		\end{figure}
+		\begin{center}
+			\large\textit{
+				تمرین 
+				3
+				درس یادگیری ماشین\\
+				}
+			\large\textit{آریا جلالی}\\
+			\large\textit{98105665}
+		\end{center}
+		\vspace*{\stretch{2.0}}
+	\end{titlepage}
+	
+	\newpage
+	
+
+\section{\eng{Comparison between some models}}
+\subsection{}
+درخت تصمیم در بسیاری از موارد روی داده‌ی آموزش
+\eng{overfit}
+می‌کند و طبق 
+\eng{Bias-variance tradeoff}
+دارای بایاس کم و واریانس بالا هستند. طبق رابطه‌ی بایاس می‌توانیم بنویسیم
+\begin{align*}
+	Bias = (f - E[f^{'}])^2   
+\end{align*}
+است. همانطور که مشخص است، اگر ما دفعات متعددی درخت تصمیم آموزش دهیم و میانگین آن‌ها را به عنوان 
+\eng{classifier}
+نهایی قرار دهیم، خطای ما به مراتب روی داده‌ی تست کاهش پیدا می‌کند.
+\\
+یکی از روش‌هایی که باعث می‌شود واریانس ما کمتر شود (و خطا روی داده‌ی تست نیز کاهش پیدا کند) استفاده از تعدادی درخت تصمیم با 
+\eng{correlation}
+کم است. برای کم کردن هرچه بیشتر این ارتباط می‌توانیم 
+\eng{feature}های
+متفاوت یا داده‌های متفاوت برای آموزش به هر درخت بدهیم و در نهایت بین نتایج بدست آمده رای‌گیری داشته باشیم.
+\\
+در واقع استفاده از 
+\eng{Random Forests}
+با استفاده کردن از چندین درخت تصمیم جلوی 
+\eng{overfit}
+شدن که یکی از خصوصیات بارز درخت تصمیم است را می‌گیرد.
+\subsection{}
+\eng{XGBoost}
+در مقایسه با 
+\eng{Random Forests}
+عملکرد بهتری در دیتاست‌های 
+\eng{unbalanced}
+از خود نشان می‌دهد، زیرا اگر در گام اول نتواند به درستی نتیجه را پیشبینی کند، در گام‌های بعدی توجه و اهمیت بیشتری به آن کلاس می‌دهد.
+\\
+\eng{XGBoost}
+سرعت بالاتری نسبت به 
+\eng{AdaBoost}
+دارد و حساسیت کمتری نسبت به نویز موجود در دیتاست از خود نشان می‌دهد.
+\\
+\eng{XGBoost}
+در مقابل 
+\eng{Gradient Boosting}
+همانند بخش قبل سریعتر است و با استفاده از 
+\eng{loss}
+های 
+$l1$
+و
+$l2$
+احتمال 
+\eng{overfit}
+شدن را می‌گیرد و قدرت 
+\eng{generalization}
+بیشتری از خود نسبت به 
+\eng{Gradient Boosting}
+نشان می‌دهد.
+\section{\eng{Fitting a model}}
+\subsection{}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{2-1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{2-2}
+\end{figure}
+\subsection{}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{2-3}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{2-4}
+\end{figure}
+\section{\eng{Gradient Boost}}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{4-1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{4-2}
+\end{figure}
+\section{\eng{Descriptive Questions}}
+\subsection{}
+\eng{Exploding Gradient}
+زمانی رخ می‌دهد که گرادیان اررورها به صورت نمایی بزرگ می‌شوند و این باعث می‌شود در مرحله‌ی آپدیت وزن مقادیر
+$w_i$
+بسیار افزایش یا کاهش پیدا کنند و مدل ما 
+\eng{unstable}
+شود و نتواند از داده‌ی آموزشی چیز معنی‌داری یاد بگیرد.
+\\
+برای حل این مشکل می‌توانیم از روش
+\eng{Weight Initialization}
+است. به این صورت که مقادیر اولیه وزن‌ها را به صورت رندوم انتخاب نمی‌کنیم و سعی می‌کنیم مقادیر داده شده از یک توزیع نرمال با یک سری پارامتر خاص پیروی کنند تا وزن‌ها در بازه‌ی محدودی قرار بگیرند و مشکل 
+\eng{Exploding Gradient}
+با احتمال کمتری رخ دهد.
+\\
+یکی دیگر از روش‌های حل این مشکل استفاده از
+\eng{Gradient Clipping}
+است. در این روش اگر مقدار گرادیان بزرگتر از یک بازه‌ای باشد مقدار آن برابر با کران بالای بازه‌ی انتخاب شده قرار داده می‌شود و همین عمل برای گرادیان‌ها کوچکتر از بازه و کران پایین انجام می‌شود. با این روش گرادیان‌ها در محدوده‌ی خاصی قرار می‌گیرند و به صورت نامحدود رشد نمی‌کنند.
+\subsection{}
+اضافه کردن لایه‌های بیشتر به مدل باعث پیچیده‌تر شدن آن می‌شود و می‌توانیم بایاس را کاهش دهیم. ولی اگر پیچیدگی مدل به مراتب بیشتر از حد نیاز برای حل سوال باشد، دچار 
+\eng{overfitting}
+می‌شویم و مدل ما واریانس بالایی خواهد داشت. از طرفی اضافه کردن لایه‌های زیاد باعث افزایش زمان 
+\eng{train}
+و به وجود آمدن مشکلات متعددی مانند
+\eng{Exploding Gradient}
+و
+\eng{Vanishing Gradient}
+می‌شود.
+\subsection{}
+در صورتی که داده‌ی آموزشی ما از قبل به صورت تصادفی چیده نشده باشد، ممکن است ارتباطی بین داده‌های نزدیک به هم باشد و مدل ما سعی می‌کند با یاد گرفتن این ارتباط خطا را کاهش دهد. در صورتی که هدف ما یاد گرفتن توزیع آماری مدل به صورت کلی است. این 
+\eng{bias}
+در داده‌ی آموزشی باعث می‌شود مدل به جای یاد گرفتن ویژگی‌ها و روابط توصیف کننده‌ی توزیع داده، روابط بین داده‌ها را یاد بگیرد و دچار 
+\eng{overfitting}
+شدید روی داده‌ی آموزشی شود.
+\subsection{}
+\begin{align*}
+	(1 + e^{-x})\sigma = 1 \Rightarrow -e^{-x}\sigma + (1 + e^{-x})\frac{d\sigma}{dx} = 0
+\end{align*}
+\begin{align*}
+	\frac{d\sigma}{dx} = \sigma. \frac{e^{-x}}{(1+e^{-x})} = \sigma. \frac{(1 + e^{-x}) - 1}{(1+e^{-x})} = \sigma. [1 - \frac{1}{(1 + e^{-x})}] = \sigma.(1 - \sigma)
+\end{align*}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{Sigmoid derivative}
+	\caption{شکل تابع و مشتق سیگموید}
+\end{figure}
+همانطور که از شکل بالا مشخص است در صورتی که مقدار وزن یا مقدار ورودی به تابع بسیار بزرگ باشد،‌ گرادیان آن تقریبا برابر با ۰
+خواهد بود و دچار مشکل
+\eng{Vanishing Gradient}
+می‌شویم و مدل در تغییر وزن‌ها دچار مشکل می‌شود و فرایند
+\eng{Train}
+به اتمام نمی‌رسد یا زمان بسیار زیادی طول خواهد کشید.
+\\
+یکی از راه‌های حل این مشکل تغییر تابع
+\eng{activation}
+به یک تابع دیگر مانند
+\eng{RELU}
+است.
+\subsection{}
+در این حالت ۲ مشکل ممکن است رخ دهد. اگر همانند صورت سوال فرض کنیم مقادیر بزرگتر از ۰.۵ برابر با کلاس ۱ قرار داده می‌شوند و مقادیر ۰.۵ کمتر برابر با کلاس ۰، مشکلی از لحاظ پیشبینی همواره یک کلاس نخواهیم داشت (در صورتی که مقادیر ۰.۵ و بزرگتر به عنوان کلاس ۰ پیشبینی می‌شدند به دلیل نامنفی بودن خروجی تابع
+\eng{RELU}
+همواره پیشبینی مدل کلاس ۱ بود.) ولی مشکل اساسی این مدل این است که اگر اعضای کلاس ۱ به اشتباه به کلاس ۰ نسبت داده شوند به دلیل منفی بودن نتیجه و صفر بودن مشتق تابع
+$\sigma(RELU(x))$
+در نقاط منفی گرادیان برابر با ۰ می‌بود و مدل از این پیشبینی اشتباه چیزی یاد نمی‌گرفت.
+\subsection{}
+در صورتی که تابع
+\eng{activation}
+نداشته باشیم، خروجی هر لایه را به صورت یک ضرب ماتریسی به صورت مقابل نشان داد
+\begin{align*}
+	A^{n} = W^{n}(A^{n - 1}) + b^{n - 1} = W^{n}(W^{n - 1}A^{n - 2} + b^{n - 1}) + b^{n - 2} = \dots = W^{'}(X) + b^{0}
+\end{align*}
+\begin{align*}
+	W^{'}(X) = W^{n}(W^{n - 1}(W^{n - 2}(\dots) + b^{n - 3}) + b^{n - 2})
+\end{align*}
+با ضرب متوالی ماتریس‌ها به این نتیجه می‌رسیم که خروجی هر لایه ترکیب خطی‌ای از ورودی‌ها است و مدل ما در واقع یک 
+\eng{Regressor}
+است.
+\section{\eng{Intuitive Questions}}
+\subsection{}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{Chess Pattern}
+	\caption{مدل طراحی شده برای تشخیص شکل شطرنجی}
+\end{figure}
+در مدل بالا به پیکسل‌هایی که باید در حالت مدنظر ما ۱ باشند وزن ۱ و به پیکسل‌های ۰ وزن -۱ را می‌دهیم. در این صورت حداکثر مقدار جمع برابر با ۸ خواهد بود، زیرا اگر پیکسل دیگری روشن باشد حداقل یکی از خروجی کم می‌شود. در نهایت این مقدار را با بایاس -۷.۵ جمع می‌کنیم و اگر شکل صفحه همانند صفحه‌ی نشان داده شده باشد مقدار ورودی به تابع پله برابر با ۰.۵ خواهد بود و در غیر اینصورت مقداری منفی خواهد بود.
+\\
+عکس همین کار برای حالتی که جای پیکسل‌های سیاه و سفید شود انجام شده است و در نهایت نتیجه‌ی خروجی‌ها باهم 
+\eng{OR}
+شده‌اند.
+\\
+در نهایت اگر صفحه‌ی مدنظر تشخیص داده شود خروجی مدل ما برابر با ۱ و در غیر اینصورت برابر با ۰ خواهد بود.
+\subsection{}
+\eng{MLP}
+ها رابطه‌ی بین پیکسل‌های اطراف را در نظر نمی‌گیرند و هر پیکسل را مستقل از پیکسل‌های اطراف در نظر می‌گیرند (از دانش 
+\eng{prior}
+استفاده‌ای نمی‌شود.) از طرفی مدل‌های 
+\eng{MLP}
+حساس به مکان 
+\eng{object}
+در تصویر هستند و در اکثر اوقات دچار 
+\eng{overfit}
+روی داده‌ی آموزشی می‌شوند. این مدل‌ها دارای
+\eng{Invariance to translation}
+نیستند و تنها داده‌های جدید را می‌توانند تشخیص دهند که در داده‌ی آموزشی نمونه‌ای از آن در همان نقطه وجود داشته باشد.
+\\
+مشکل دیگر استفاده از 
+\eng{MLP}
+و در نظر نگرفتن رابطه‌ی بین پیکسل‌ها وجود پارامتر‌های فراوان در عکس‌ها است و این باعث کاهش سرعت یادگیری می‌شود. از طرفی منابع پردازشی زیادی برای آموزش نیاز است.
+\section{\eng{Computational Question}}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{C-1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{C-2}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{C-3}
+\end{figure}
+\end{document}

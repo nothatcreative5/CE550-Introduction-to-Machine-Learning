@@ -1,0 +1,393 @@
+\documentclass[12pt,onecolumn,a4paper]{article}
+\usepackage{epsfig,graphicx,subfigure,amsthm,amsmath}
+\usepackage{float}
+\usepackage{color,xcolor}     
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{svg}
+\usepackage{tikz}
+\usepackage{mathtools}
+\usepackage{xepersian}
+\settextfont[Scale=1.2]{NAZANIN.TTF}
+\setlatintextfont[Scale=1]{Times New Roman}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{backcolour},   commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	filecolor=magenta,      
+	urlcolor=cyan,
+	pdftitle={Overleaf Example},
+	pdfpagemode=FullScreen,
+}
+\newcommand\myworries[1]{\textcolor{red}{#1}}
+\lstset{style=mystyle,language=Python}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\eng}[1]{{\lr{\selectfont #1}}}
+\begin{document}
+	\begin{titlepage}
+		\vspace*{\stretch{1.0}}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{Sharif Logo.jpg}
+			\label{fig:my_label}
+		\end{figure}
+		\begin{center}
+			\large\textit{
+				تمرین 
+				1
+				درس یادگیری ماشین\\
+				}
+			\large\textit{آریا جلالی}\\
+			\large\textit{98105665}
+		\end{center}
+		\vspace*{\stretch{2.0}}
+	\end{titlepage}
+	
+	\newpage
+	
+	\section{جبرخطی}
+	\subsection{\eng{Derivative}}
+	\subsubsection*{الف}
+	از تعریف مشتق جزیی داریم
+	\begin{align*}
+		\frac{\partial f}{\partial x_i} = \lim_{h \to 0} \frac{f(\mathbf{a} + h.e_i) - f(\mathbf{a})}{h}
+	\end{align*}
+	\begin{align*}
+		f(x + h) = (x+h)^T A (x+h) = (x^TA + h^T A)(x + h) \\= x^T A h + x^T A x + h^T A x + h^T A h \\ = f(x) + x^T A h + h^T A x + h^T A h
+	\end{align*}
+	\begin{align*}
+		\lim_{\norm{h} \to 0} \frac{f(x + h) - f(x) - x^t(A + A^T)h}{\norm{h}} = 0
+	\end{align*}
+دقت کنید عبارت 
+$h^TAh$
+عبارتی از 
+$\mathcal{O}(|h^2|)$
+است و میتوانیم از آن در صورت کسر صرف نظر کنیم.
+\\
+با توجه به تعریف مشتق در 
+$\mathbf{R^n}$
+نتیجه میشود مشتق 
+$x^T A x$
+برابر با 
+$x^T (A + A^T)$
+است که تنها در صورت متقارن بودن ماتریس 
+$A$
+برابر با
+$2x^TA$
+میشود. 
+	\subsubsection*{ب}
+	2 حالت را در نظر میگیریم
+	\subsubsection*{$x \in  \mathcal{R}^n$}
+	\begin{align*}
+		trace(x^T A x) = x^T A x \rightarrow \frac{\partial f}{\partial x} = x^T (A + A^T)
+	\end{align*}
+در واقع اگر 
+$x$
+یک بردار باشد، بخش ب حالت کلی بخش الف است و فرض متقارن بودن 
+$A$
+در آن برقرار نیست.
+	\subsubsection*{$x \in \mathcal{M}_{nm}$}
+	\begin{align*}
+		[AX]_{ik} = \sum_{j} A_{ij}X_{jk} \Rightarrow [X^T A X]_{il} = \sum_{j} X^T_{ij} [AX]_{jl} = \sum_{j} X^T_{ij} \sum_{k} A_{jk} X_{kl} \\ = \sum_{j}\sum_{k} X^T_{ij}A_{jk}X_{kl} = \sum_{j}\sum_{k} X_{ji}A_{jk}X_{kl}
+	\end{align*}
+	\begin{align*}
+		trace(X^T A X) = \sum_{c} \sum_{j} \sum_{k} X_{jc} A_{jk} X_{kc}
+	\end{align*}
+	\begin{align*}
+		[\frac{\partial trace(X^T A X)}{X}]_{ab} = \frac{\partial}{\partial x_{ab}} \sum_{c} \sum_{j} \sum_{k} X_{jc} A_{jk} X_{kc}
+	\end{align*}
+برای اینکه جملات بالا مشتق نباشد، باید 
+$c = b$
+پس 
+$c$
+را فیکس می‌کنیم.
+\begin{align*}
+	[\frac{\partial trace(X^T A X)}{X}]_{ab} = \frac{\partial}{\partial x_{ab}} \sum_{j} \sum_{k} X_{jb} A_{jk} X_{kb}
+\end{align*}
+دو حالت
+$j = a$
+و
+$k = a$
+را در نظر می‌گیریم و فعلا حالت
+$k = j = a$
+را بررسی نمی‌کنیم.
+\\
+\begin{align*}
+	j = a \rightarrow \frac{\partial}{\partial x_{ab}} \sum_{k \neq a} X_{ab} A_{ak} X_{kb} = \sum_{k \neq a} A_{ak} X_{kb}
+\end{align*}
+\begin{align*}
+	k = a \rightarrow \frac{\partial}{\partial x_{ab}} \sum_{j \neq a} X_{jb} A_{ja} X_{ab} = \sum_{j \neq a} X_{jb} A_{ja}
+\end{align*}
+\begin{align*}
+	k = j = a \rightarrow \frac{\partial}{\partial x_{ab}} X_{ab}^2 A_{ab} = 2X_{ab} A_{ab}
+\end{align*}
+با جمع کردن داریم
+\begin{align*}
+	2X_{ab} A_{ab} + \sum_{j \neq a} X_{jb} A_{ja} + \sum_{k \neq a} A_{ak} X_{kb} = \sum_{j} X_{jb} A_{ja} + \sum_{k} A_{ak} X_{kb} \\ = \sum_{j} A^T_{aj} X_{jb} + \sum_{k} A_{ak} X_{kb} = [A^TX]_{ab} + [AX]_{ab} 
+\end{align*}
+و چون شرطی روی 
+$a$
+و
+$b$
+نذاشته بودیم، می‌توانیم بنویسیم 
+\begin{align*}
+	[\frac{\partial trace(X^T A X)}{X}] = A^T X + AX =  (A^T + A)X
+\end{align*}
+دقت کنید نتیجه‌ی بالا طبق قرارداد 
+\lr{Denominator}
+نوشته شده است و اگر آن را طبق قرارداد
+\lr{Numerator}
+بنویسیم، جواب برابر با
+$X^T(A + A^T)$
+خواهد بود، که خواسته‌ی سوال است.
+	\subsection{\eng{Eigenvalue and Eigenvectors}}
+	طبق تعریف میدانیم رابطه مشخصه برای ماتریس
+	$A$
+	از رابطه
+	$det(t I - A)$
+	بدست می‌آید. حال داریم
+	\begin{align*}
+		det(t I - A) = \begin{vmatrix}
+			t - a_{11} & a_{12} & \dots & a_{1n}\\
+			a_{21} & t - a_{22} & \dots & a_{2n}\\ 
+			\dots & \dots & \dots & \dots \\
+			a_{n1} & a_{n2} & \dots & t - a_{nn} 
+		\end{vmatrix}
+	\end{align*}
+از جبرخطی میدانیم معادله‌ی بالا چندجمله‌ای با درجه‌ی 
+$n$
+است و مقادیر ویژه‌ی ماتریس
+$A$
+ریشه‌های آن هستند. پس می‌توانیم طبق قضیه‌ی فاکتور کردن چندجمله‌ای آن را به صورت مقابل نیز بازنویسی کنیم.
+\begin{align*}
+	p_A(t) = C (t - \lambda_1) \dots (t - \lambda_n)
+\end{align*}
+دقت کنید ضریب جمله‌ی توان
+$n$
+باید 1 باشد، زیرا اگر از قانون لاپلاس برای محاسبه دترمینان استفاده کنیم داریم
+\begin{align*}
+	det(t I - A) = (t - a_{11}) \times M_{11} + \mathcal{O}(t^{n-2})
+\end{align*}
+\begin{align*}
+	M_{11} = (t - a_{22}) \times M_{11_{M_{22}}} + \mathcal{O}(t^{n - 3})
+\end{align*}
+یعنی ضرایب جملات
+$t^{n - 1}$
+و
+$t^{n}$
+از عبارت
+$(t - a_{11}) * (t - a_{22}) * \dots * (t - a_{nn})$
+بدست می‌آید. که 
+$C = 1$
+را نشان می‌دهد.
+\\
+ حال با برابر قرار دادن ضرایب جمله‌ی
+$t^{n-1}$
+در 2 رابطه به نتیجه‌ی مقابل می‌رسیم
+\begin{align*}
+	\sum_{i = 1}^{n} \lambda_i = \sum_{i = 1}^n = a_{ii} = trace(A)
+\end{align*}
+\\
+با 0 قرار دادن
+$t$
+داریم 
+\begin{align*}
+	det(-A) = (-1)^n \prod_{i = 1}^n \lambda_i \rightarrow (-1)^n det(A) = (-1)^n \prod_{i = 1}^n \lambda_i \rightarrow det(A) = \prod_{i = 1}^n \lambda_i
+\end{align*}
+
+	\subsection{\eng{Rank}}
+	فرض کنید 
+	$v$
+	بردار ویژه‌ی ماتریس
+	$M$
+	متناظر با مقدار ویژه‌ی
+	$\lambda_1$
+	باشد داریم
+	\begin{align*}
+		B = P^{-1} M P \rightarrow P B P^{-1} = M \rightarrow P B P^{-1}v = Mv = \lambda_1 v \rightarrow BP^{-1}v = \lambda_1 P^{-1}v
+	\end{align*}
+	یعنی تمام مقادیر ویژه‌های ماتریس
+	$M$
+	مقادیر ویژه‌ی ماتریس
+	$B = P^{-1}MP$
+	هستند و از طرفی چون می‌توانیم بنویسیم
+	$P B P^{-1} = S^{-1} B S = M$
+	نتیجه می‌گیریم تمام مقادیر ویژه‌های ماتریس
+	$B = P^{-1}MP$
+	مقادیر ویژه‌ی ماتریس
+	$M$
+	نیز هستند که برابری مقادیر ویژه‌ را نشان می‌دهد.
+\subsection{\eng{Norms}}
+نرم‌های 
+$l1$
+و
+$l\infty$
+در کلاس توضیح داده شدند و برابر هستند با ماکسیمم جمع قدرمطلق اعضای هر ستون و سطر (به ترتیب)
+داریم
+\begin{align*}
+	l1(A) = max_{i} \sum_{j = 1}^{n} a_{ij} = |5| + |-1| + |-2| = 8
+\end{align*}
+\begin{align*}
+	l\infty(A) = max_{i} \sum_{j = 1}^{n} a_{ji4} = |5| + |-4| + |2| = 11
+\end{align*}
+حال برای
+$l2$
+داریم
+\begin{align*}
+	l2(A)^2 = max_{v} \frac{\norm{Av}_2}{\norm{v}_2} = max_{v} \frac{v^T A^T A v}{v^T v} = \frac{v^T M v}{v^T v} \hspace{0.3 cm} M =A^T A
+\end{align*}
+کسر نهایی همان
+\lr{Rayleigh quotient}
+است که می‌دانیم مقدار ماکسیمم آن برابر با بزرگترین مقدار ویژه ماتریس متقارن
+$M = A^T A$
+است. حال برای بدست آوردن مقادیر ویژه‌ی آن داریم
+\begin{align*}
+	A^T A = \begin{bmatrix}
+		30 & -24 & 7 \\
+		-24 & 21 & -2 \\
+		7 & -2 & 13
+		\end{bmatrix} \rightarrow l2(A) =  \sqrt{\lambda_{max}} \approx 7.147
+\end{align*}
+\section{احتمال}
+\subsection{\eng{Expectation}}
+با استفاده از قانون 
+\eng{lotus}
+داریم
+\begin{align*}
+	\mathbb{E}(X^3 + 2X - 7) = \int_{1}^{2} (x^3 + 2x - 7)(2x - 2)dx
+\end{align*}
+\begin{align*}
+	 = \int_{1}^{2} (2x^4 + 4x^2 - 18x - 2x^3+ 14)dx 
+	= \frac{2}{5} \times 31 + \frac{4}{3} \times 7 - 27 + 14 - \frac{1}{2} \times 15 = 1.2\bar{3}
+\end{align*}
+\subsection{\eng{Function of random variables}}
+\subsubsection*{\eng{max}}
+ابتدا 
+$F_{Y_1}(y)$
+را بدست می‌آوریم و با مشتق گرفتن از آن به 
+$f_{Y_1}(y)$
+می‌رسیم
+\begin{align*}
+	P(Y_1 \leq y) = P(X_1 \leq y, \dots, X_n \leq y) = \prod_{i = 1}^{n} P(X_i \leq y) = \prod_{i = 1}^{n} F_X(y) = F_{X}(y)^{n}
+\end{align*}
+\begin{align*}
+	f_{Y_1}(y) = \frac{d}{dy} P(Y_1 \leq y) = n f_X(y) F_{X}(y)^{n - 1}
+\end{align*}
+\subsubsection*{\eng{min}}
+همانند بخش قبل عمل میکنیم
+\begin{align*}
+	1 - F_{Y_2}(y) = P(Y_2 > y) = \prod_{i = 1}^{n} (1 - F_{X}(y)) = (1 - F_{X}(y))^{n} \\ \rightarrow F_{Y_2}(y) = 1 - (1 - F_X(y))^n
+\end{align*}
+\begin{align*}
+	f_{Y_2}(y) = \frac{d}{dy} P(Y_2 \leq y) = nf_{X}(y) (1 - F_X(y))^{n - 1}
+\end{align*}
+\subsection{\eng{Estimation}}
+\subsubsection*{الف}
+برای توزیع 
+\eng{joint}
+با توجه به رابطه‌ی قانون شرطی داریم.
+\begin{align*}
+	f_{X,Y,\mu}(t,x,y) = f_{X,Y|\mu}(x,y | \mu = t) \times f_{\mu}(t)
+\end{align*}
+دقت کنید متغیر‌های تصادفی 
+$X$
+و
+$Y$
+مستقل هستند و می‌توانیم احتمال شرطی بالا را جدا کنیم و بنویسیم:
+\begin{equation*}
+	f_{X,Y,\mu}(t,x,y) = f_{X|\mu}(x | \mu = t) \times f_{Y|\mu}(y | \mu = t) \times f_{\mu}(t)
+\end{equation*}
+با استفاده از روابط 
+\eng{pdf}
+داریم:
+\begin{align*}
+	f_{X,Y,\mu}(t,x,y) = \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2} (x-t)^2} \times \frac{1}{\sqrt{2\pi}}e^{-\frac{1}{2} (y-t)^2} \times 1
+\end{align*}
+در نهایت توزیع
+\eng{joint}
+ما به صورت مقابل خواهد بود:
+\begin{align*}
+	f_{X,Y,\mu}(t,x,y) = \begin{cases}
+		\frac{1}{2\pi}e^{-\frac{(x-t)^2 + (y-t)^2}{2}} \hspace{0.6 cm} 0 \leq t \leq 1 \\
+		0 \hspace{1 cm} O.w
+	\end{cases}
+\end{align*}
+\subsubsection*{ب:}
+برای پیدا کردن تخمین 
+\eng{MAP}
+نیاز به تعدادی 
+\eng{Sample}
+از توزیع‌های 
+$X$
+و
+$Y$
+داریم و در نهایت عبارت مقابل را ماکسیمم کنیم:
+\begin{align*}
+	f(\mu | D) \propto f(D | \mu) f(\mu)
+\end{align*}
+حال با استفاده از نتایج بخش الف می‌توانیم بنویسیم:
+\begin{align*}
+	f(D | \mu) f(\mu) = \prod_{i = 1}^{n} \frac{1}{2\pi}e^{-\frac{(x_i-\mu)^2 + (y_i-\mu)^2}{2}} \hspace{0.6 cm} 0 \leq \mu \leq 1
+\end{align*}
+برای ماکسیمم کردن عبارت بالا نیاز به ضریب
+$\frac{1}{2\pi}$
+نداریم و می‌توانیم تابع لگاریتم آن را ماکسیمم کنیم.
+\begin{align*}
+	log(f(D | \mu) f(\mu)) \propto \sum_{i = 1}^{n} -((x_i-\mu)^2 + (y_i - \mu)^2) = g(\mu)
+\end{align*}
+با مشتق گرفتن نسبت به
+$\mu$
+خواهیم داشت:
+\begin{align*}
+	\frac{dg}{d\mu} = \sum_{i = 1}^n 2 (x_i + y_i - 2\mu) = 0 \equiv \sum_{i = 1}^n  (x_i + y_i - 2\mu) = 0 
+\end{align*}
+\begin{align*}
+	\Rightarrow \mu_{MAP} = \frac{\sum_{i = 1}^n x_i + y_i}{2n}
+\end{align*}
+دقت کنید 
+$\mu$
+حتما باید بین 
+$0$
+و
+$1$
+باشد و در صورتی که رابطه‌ی بالا از 
+$0$
+کمتر و یا از 
+$1$
+بیشتر شود خواهیم داشت:
+\begin{align*}
+	\mu_{MAP} =  \begin{cases}
+		1 \hspace{1cm} \frac{\sum_{i = 1}^n x_i + y_i}{2n} > 1 \\
+		0 \hspace{1cm} \frac{\sum_{i = 1}^n x_i + y_i}{2n} < 0
+		\\
+		\frac{\sum_{i = 1}^n x_i + y_i}{2n} \hspace{0.5 cm} O.w
+	\end{cases}
+\end{align*}
+\end{document}
